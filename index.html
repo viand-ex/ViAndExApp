@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#FF6B1A">
 <title>ViAndEx — Обмен валют в Таиланде</title>
 <!-- Telegram Mini App SDK -->
@@ -25,10 +25,6 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    height: 100%;
-    background: #EEF6FF;
-  }
 
   body {
     font-family: 'Nunito', -apple-system, sans-serif;
@@ -36,7 +32,6 @@
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   /* HERO */
@@ -51,7 +46,7 @@
     display: block;
     max-height: 420px;
     object-fit: cover;
-    object-position: center bottom;
+    object-position: 45% 20%;
     opacity: 0.92;
   }
   .hero-overlay {
@@ -1248,20 +1243,17 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: -50px;
-    padding-top: 50px;
   }
   .hero-v2-img {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: center bottom;
+    object-position: 45% 20%;
     display: block;
   }
   .hero-v2-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: absolute; inset: 0;
     background: linear-gradient(
       to bottom,
       rgba(10,20,40,0.35) 0%,
@@ -1277,7 +1269,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 60px 18px 0;
+    padding: 18px 18px 0;
   }
   .hero-v2-logo { display: flex; flex-direction: column; gap: 2px; }
   .hero-v2-logo-text {
