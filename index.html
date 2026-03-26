@@ -2010,7 +2010,16 @@ async function fetchRatesFromSheets() {
 buildQuickBtns();
 updateDisplayedRates();
 fetchRatesFromSheets();
-setInterval(fetchRatesFromSheets, 10 * 60 * 1000);
+// Обновление каждую минуту, только с 9:00 до 00:00
+function scheduledFetch() {
+  const now = new Date();
+  const hours = now.getHours();
+  // Работаем с 9:00 (9) до 00:00 (24, т.е. < 24 и >= 9)
+  if (hours >= 9 && hours < 24) {
+    fetchRatesFromSheets();
+  }
+}
+setInterval(scheduledFetch, 60 * 1000); // каждую минуту
 // Default: RUB selected, no amount
 setPayDir('RUB');
 </script>
