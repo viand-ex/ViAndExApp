@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FF6B1A">
+<title>ViAndEx — Обмен валют в Таиланде</title>
+<!-- Telegram Mini App SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF6B1A;
+    --orange-light: #FF8C42;
+    --orange-dark: #E05510;
+    --teal: #2BC4C4;
+    --teal-light: #5DD8D8;
+    --bg: #F0F8FF;
+    --card: rgba(255,255,255,0.85);
+    --text: #1A2340;
+    --text-sub: #5A6A8A;
+    --border: rgba(255,107,26,0.15);
+    --shadow: 0 8px 32px rgba(255,107,26,0.13);
+    --radius: 22px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Nunito', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0A1628 0%, #1B3A5C 50%, #0D2340 100%);
+  }
+  .hero-img {
+    width: 100%;
+    display: block;
+    max-height: 420px;
+    object-fit: cover;
+    object-position: center top;
+    opacity: 0.92;
+  }
+  .hero-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(transparent, var(--bg));
+  }
+
+  /* RATES TICKER */
+  .ticker-wrap {
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%);
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker {
+    display: flex;
+    gap: 48px;
+    animation: ticker 20s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .ticker-item {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ticker-item .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* MAIN */
+  .main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+  }
+
+  /* RATES CARD */
+  .rates-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .rates-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,26,0.12), transparent 70%);
+  }
+  .rates-card-title {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-sub);
+    margin-bottom: 14px;
+  }
+  .rates-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .rates-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .rates-row:first-of-type { padding-top: 0; }
+  .rates-pair {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .flag-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+    flex-shrink: 0;
+  }
+  .flag-icon.rub { background: linear-gradient(135deg, #1B3A8C, #2456C8); color: #fff; font-size: 14px; font-weight: 900; }
+  .flag-icon.usdt { background: linear-gradient(135deg, #26A17B, #1A8060); color: #fff; font-size: 12px; font-weight: 900; }
+  .rates-pair-label { font-size: 15px; font-weight: 800; }
+  .rates-pair-sub { font-size: 11px; color: var(--text-sub); font-weight: 600; }
+  .rates-value {
+    text-align: right;
+  }
+  .rates-value-main {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--orange);
+  }
+  .rates-value-unit { font-size: 11px; color: var(--text-sub); font-weight: 700; }
+  .rates-bonus {
+    margin-top: 10px;
+    background: linear-gradient(90deg, rgba(43,196,196,0.12), rgba(43,196,196,0.05));
+    border: 1px solid rgba(43,196,196,0.25);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1A8A8A;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .rates-bonus-icon { font-size: 14px; }
+  .last-update {
+    font-size: 10px;
+    color: var(--text-sub);
+    text-align: right;
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+
+  /* CONVERTER CARD */
+  .converter-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 22px 20px;
+    margin-bottom: 18px;
+  }
+  .converter-title {
+    font-size: 17px;
+    font-weight: 900;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .converter-title .icon { font-size: 20px; }
+
+  /* Direction tabs */
+  .dir-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.05);
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 18px;
+    gap: 4px;
+  }
+  .dir-tab {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 11px;
+    border: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .dir-tab.active {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(255,107,26,0.3);
+  }
+
+  /* Mode tabs (give/receive) */
+  .mode-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .mode-tab {
+    flex: 1;
+    padding: 10px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    background: rgba(0,0,0,0.04);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .mode-tab.active {
+    border-color: var(--orange);
+    background: rgba(255,107,26,0.07);
+    color: var(--orange);
+  }
+
+  /* Input group */
+  .input-group {
+    margin-bottom: 14px;
+  }
+  .input-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-sub);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .input-wrap {
+    position: relative;
+  }
+  .currency-input {
+    width: 100%;
+    padding: 15px 70px 15px 18px;
+    border-radius: 14px;
+    border: 2px solid rgba(0,0,0,0.08);
+    background: rgba(255,255,255,0.9);
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .currency-input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,107,26,0.1);
+  }
+  .currency-badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: #fff;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .currency-badge.thb {
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+  }
+
+  /* Arrow */
+  .exchange-arrow {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 14px;
+  }
+  .exchange-arrow-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 16px rgba(255,107,26,0.35);
+    transition: transform 0.2s;
+    color: #fff;
+  }
+  .exchange-arrow-btn:active { transform: scale(0.92) rotate(180deg); }
+
+  /* Result box */
+  .result-box {
+    background: linear-gradient(135deg, rgba(43,196,196,0.1), rgba(43,196,196,0.05));
+    border: 2px solid rgba(43,196,196,0.3);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .result-label { font-size: 13px; font-weight: 700; color: var(--text-sub); }
+  .result-value { font-size: 26px; font-weight: 900; color: var(--teal); }
+  .result-currency { font-size: 14px; font-weight: 800; color: var(--teal); opacity: 0.7; }
+
+  /* Rate info */
+  .rate-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-sub);
+    background: rgba(0,0,0,0.04);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+  .rate-info span { display: flex; gap: 4px; align-items: center; }
+
+  /* CTA Button */
+  .cta-btn {
+    width: 100%;
+    padding: 17px;
+    border-radius: 16px;
+    border: none;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    box-shadow: 0 6px 24px rgba(255,107,26,0.4);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .cta-btn:active { transform: scale(0.97); box-shadow: 0 3px 12px rgba(255,107,26,0.3); }
+
+  /* INFO CARD */
+  .info-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .info-title {
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-sub);
+    margin-bottom: 14px;
+  }
+  .info-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .info-step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-text { font-size: 13px; font-weight: 700; line-height: 1.5; padding-top: 4px; }
+
+  /* MASCOT */
+  .mascot-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .mascot-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(255,107,26,0.25));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* LOGO header */
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .logo-text {
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 30%, rgba(255,200,150,0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    text-shadow: none;
+  }
+  .logo-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--orange-light);
+  }
+  .tagline {
+    color: rgba(255,255,255,0.65);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Telegram btn */
+  .tg-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    background: #2AABEE;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 16px rgba(42,171,238,0.35);
+    transition: all 0.2s;
+  }
+  .tg-btn:active { transform: scale(0.97); }
+
+  /* CTA amount badge */
+  .cta-amount {
+    background: rgba(255,255,255,0.22);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 15px;
+    font-weight: 900;
+    margin-left: 4px;
+    min-width: 60px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .cta-hint {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-top: 10px;
+    font-weight: 600;
+    opacity: 0.8;
+  }
+
+  /* Info card light blue like screenshot */
+  .info-card {
+    background: #EAF4FF;
+    border: 1.5px solid rgba(43,130,196,0.15);
+  }
+  .info-title {
+    color: #2A7AB8;
+    font-size: 14px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .step-num {
+    background: transparent !important;
+    border: 2px solid rgba(43,130,196,0.4);
+    color: #2A7AB8 !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 13px !important;
+  }
+  .step-text {
+    color: #2A4A6A;
+  }
+
+  /* Hide / show based on mode */
+  .hidden { display: none !important; }
+
+  /* Responsive */
+  @media (max-width: 360px) {
+    .dir-tab { font-size: 11px; }
+    .rates-value-main { font-size: 20px; }
+  }
+
+  /* Accent bar */
+  .accent-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--orange), var(--teal));
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  /* ═══ NEW CALCULATOR STYLES ═══ */
+
+  /* Section label */
+  .sec-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.8px;
+    color: #8A9BBC;
+    margin: 18px 0 8px;
+    padding: 0 2px;
+  }
+
+  /* Choose payment card */
+  .choose-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 4px;
+  }
+  .choose-row {
+    display: flex;
+    gap: 10px;
+  }
+  .choose-btn {
+    flex: 1;
+    background: #F4F7FB;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 12px 8px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .choose-btn.active {
+    background: #FFF4EC;
+    border-color: var(--orange);
+  }
+  .choose-btn:active { transform: scale(0.96); }
+  .choose-icon {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    font-weight: 900;
+    background: #E0E8F4;
+    color: #8A9BBC;
+  }
+  .choose-btn.active .choose-icon { opacity: 1; }
+  .choose-icon.rub-ic { background: #E8EFFE; color: #5A7ACE; }
+  .choose-icon.usdt-ic { background: #E0F4EE; color: #2A9E78; }
+  .choose-icon.thb-ic {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    color: #fff;
+  }
+  .choose-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .choose-sub {
+    font-size: 10px;
+    color: #8A9BBC;
+    font-weight: 600;
+    text-align: center;
+  }
+  .choose-sub-active {
+    font-size: 10px;
+    color: var(--orange);
+    font-weight: 700;
+    text-align: center;
+    display: none;
+  }
+  .choose-check {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Amount input card */
+  .amount-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 16px 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 10px;
+  }
+  .amount-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .amount-thb-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: #FFF0E6;
+    color: var(--orange);
+    font-size: 20px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .amount-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text);
+    background: transparent;
+    min-width: 0;
+    -webkit-appearance: none;
+  }
+  .amount-input::placeholder { color: #C8D4E8; }
+  .amount-arrow {
+    font-size: 16px;
+    color: #B0BDD4;
+    flex-shrink: 0;
+  }
+  .amount-result-pill {
+    background: #EEF4FF;
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #4A7ACC;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 80px;
+    text-align: center;
+  }
+  .amount-clear {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 2px solid #D8E2EE;
+    background: transparent;
+    color: #9AAAC0;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Quick buttons row */
+  .quick-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .quick-btn {
+    flex: 1;
+    padding: 11px 4px;
+    border-radius: 14px;
+    border: 2px solid #E4EAF4;
+    background: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+    text-align: center;
+  }
+  .quick-btn.active {
+    background: #FFF0E6;
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+  .quick-btn:active { transform: scale(0.95); }
+
+  /* Result card (ATM block) */
+  .result-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 18px 18px 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+  }
+  .result-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .result-atm-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4A7ACC;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .atm-dot { color: #5BC47A; font-size: 10px; }
+  .result-tg-link {
+    font-size: 12px;
+    font-weight: 700;
+    color: #8A9BBC;
+    text-decoration: none;
+    background: #EEF4FF;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .result-card-label {
+    font-size: 13px;
+    color: #8A9BBC;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .result-big-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .result-big-num {
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .result-big-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: #FFF0E6;
+    color: var(--orange);
+    font-size: 24px;
+    font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .result-min-badge {
+    background: #EEF4FF;
+    color: #4A7ACC;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0 auto 8px;
+    width: fit-content;
+  }
+  .result-rate-row {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--orange);
+    text-align: left;
+    margin-top: 6px;
+  }
+
+  /* Need card (payment breakdown) */
+  .need-card {
+    background: #fff;
+    border: 2px solid rgba(255,107,26,0.15);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+    margin-bottom: 16px;
+  }
+  .need-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .need-icon-i {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    color: var(--orange);
+    font-size: 13px;
+    font-weight: 900;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .need-options-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .need-opt {
+    flex: 1;
+    border-radius: 16px;
+    padding: 14px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .need-opt.blue { background: #EEF4FF; }
+  .need-opt.green { background: #E8F7EF; }
+  .need-dot { font-size: 10px; flex-shrink: 0; }
+  .blue-dot { color: #4A7ACC; }
+  .green-dot { color: #2A9E78; }
+  .need-opt-val {
+    font-size: 18px;
+    font-weight: 900;
+  }
+  .need-opt.blue .need-opt-val { color: #4A7ACC; }
+  .need-opt.green .need-opt-val { color: #2A9E78; }
+  .need-opt-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8A9BBC;
+    margin-top: 2px;
+  }
+  .need-or {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8A9BBC;
+    flex-shrink: 0;
+  }
+
+  /* Rates card top row */
+  .rates-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .rates-top-row .rates-card-title { margin-bottom: 0; }
+  .rates-top-row .last-update { font-size: 10px; color: var(--text-sub); opacity: 0.7; }
+
+</style>
+</head>
+<body>
+
+<!-- HERO — full scrollable -->
+<div class="hero">
+  <div style="background: linear-gradient(160deg, #0A1628 0%, #1B3A5C 50%, #0D2340 100%); padding: 0 0 0;">
+    <!-- Logo bar on top of hero image -->
+    <div class="logo-bar">
+      <div class="logo-text">ViAndEx</div>
+    </div>
+    <p class="tagline">💱 Обмен валют · Таиланд</p>
+    <img src="IMG_1934.png" class="hero-img" alt="ViAndEx" onerror="this.style.display='none'">
+  </div>
+  <div class="hero-overlay"></div>
+</div>
+
+<!-- RATES TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <span class="ticker-item"><span class="dot"></span>💳 RUB › THB: <strong id="t1">2.65</strong> ฿</span>
+    <span class="ticker-item"><span class="dot"></span>💲 USDT › THB: <strong id="t2">31.46</strong> ฿</span>
+    <span class="ticker-item"><span class="dot"></span>🏧 Выдача в ATM · QR-код</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="dot"></span>💳 RUB › THB: <strong>2.65</strong> ฿</span>
+    <span class="ticker-item"><span class="dot"></span>💲 USDT › THB: <strong>31.46</strong> ฿</span>
+    <span class="ticker-item"><span class="dot"></span>🏧 Выдача в ATM · QR-код</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- RATES CARD — compact -->
+  <div class="rates-card">
+    <div class="rates-top-row">
+      <div class="rates-card-title">📊 Актуальные курсы</div>
+      <div class="last-update" id="lastUpdate">Обновлено только что</div>
+    </div>
+    <div class="rates-row">
+      <div class="rates-pair">
+        <div class="flag-icon rub">₽</div>
+        <div>
+          <div class="rates-pair-label">RUB → THB</div>
+          <div class="rates-pair-sub">Рубли · СБП</div>
+        </div>
+      </div>
+      <div class="rates-value">
+        <div class="rates-value-main" id="rateRUB">2.65</div>
+        <div class="rates-value-unit">₽ за 1 ฿</div>
+      </div>
+    </div>
+    <div class="rates-row">
+      <div class="rates-pair">
+        <div class="flag-icon usdt">₮</div>
+        <div>
+          <div class="rates-pair-label">USDT → THB</div>
+          <div class="rates-pair-sub">Tether TRC-20</div>
+        </div>
+      </div>
+      <div class="rates-value">
+        <div class="rates-value-main" id="rateUSDT">31.46</div>
+        <div class="rates-value-unit">฿ за 1 USDT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ NEW CALCULATOR ═══ -->
+
+  <!-- STEP 1: What to receive -->
+  <div class="sec-label">ХОЧУ ПОЛУЧИТЬ</div>
+  <div class="choose-card">
+    <div class="choose-row">
+      <button class="choose-btn" id="btnRUB" onclick="setPayDir('RUB')">
+        <div class="choose-icon rub-ic">₽</div>
+        <div class="choose-info">
+          <div class="choose-name">Рубли</div>
+          <div class="choose-sub">СБП · Банк</div>
+        </div>
+      </button>
+      <button class="choose-btn" id="btnUSDT" onclick="setPayDir('USDT')">
+        <div class="choose-icon usdt-ic">₮</div>
+        <div class="choose-info">
+          <div class="choose-name">USDT</div>
+          <div class="choose-sub">TRC20 · ERC20</div>
+        </div>
+      </button>
+      <button class="choose-btn active" id="btnTHB" onclick="setPayDir('THB')">
+        <div class="choose-icon thb-ic">฿</div>
+        <div class="choose-info">
+          <div class="choose-name">Баты</div>
+          <div class="choose-sub-active">Хочу получить</div>
+        </div>
+        <div class="choose-check">✓</div>
+      </button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Amount input -->
+  <div class="sec-label" id="amountLabel">СКОЛЬКО БАТОВ?</div>
+  <div class="amount-card">
+    <div class="amount-row">
+      <div class="amount-thb-icon">฿</div>
+      <input class="amount-input" id="mainInput" type="number" inputmode="numeric"
+        placeholder="10000" oninput="onMainInput()">
+      <div class="amount-arrow">→</div>
+      <div class="amount-result-pill" id="resultPill">—</div>
+      <button class="amount-clear" onclick="clearInput()">✕</button>
+    </div>
+  </div>
+
+  <!-- Quick amount buttons -->
+  <div class="quick-row">
+    <button class="quick-btn" onclick="setQuick(5000)">5К฿</button>
+    <button class="quick-btn" id="q10" onclick="setQuick(10000)">10К฿</button>
+    <button class="quick-btn" onclick="setQuick(20000)">20К฿</button>
+    <button class="quick-btn" onclick="setQuick(50000)">50К฿</button>
+  </div>
+
+  <!-- STEP 3: Result block -->
+  <div class="result-card" id="resultCard">
+    <div class="result-card-top">
+      <div class="result-atm-badge">
+        <span class="atm-dot">●</span> Банкомат · ATM QR
+      </div>
+      <a class="result-tg-link" href="https://t.me/ViAnd_Ex" target="_blank">✈ @ViAnd_Ex</a>
+    </div>
+    <div class="result-card-label">Вы получите наличными</div>
+    <div class="result-big-row">
+      <div class="result-big-num" id="resultBigNum">—</div>
+      <div class="result-big-icon">฿</div>
+    </div>
+    <div class="result-min-badge" id="resultMinBadge" style="display:none">
+      🏷 от 10 000 ฿
+    </div>
+    <div class="result-rate-row" id="resultRateRow">—</div>
+  </div>
+
+  <!-- Payment needed block -->
+  <div class="need-card" id="needCard">
+    <div class="need-title">
+      <span class="need-icon-i">ℹ</span>
+      Для <span id="needForAmt">—</span> нужно:
+    </div>
+    <div class="need-options-row">
+      <div class="need-opt blue" id="needRUB">
+        <span class="need-dot blue-dot">●</span>
+        <div>
+          <div class="need-opt-val" id="needRUBVal">—</div>
+          <div class="need-opt-sub">через СБП</div>
+        </div>
+      </div>
+      <div class="need-or">или</div>
+      <div class="need-opt green" id="needUSDT">
+        <span class="need-dot green-dot">●</span>
+        <div>
+          <div class="need-opt-val" id="needUSDTVal">—</div>
+          <div class="need-opt-sub">USDT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <button class="cta-btn" id="ctaExchange" onclick="openExchange()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+    Обменять на баты
+    <span class="cta-amount" id="ctaAmount">฿</span>
+  </button>
+
+  <!-- Instructions — toggle by payment method -->
+  <div class="info-card" id="infoCard">
+    <div id="infoSBP">
+      <div class="info-title">ℹ️ Оплата через СБП</div>
+      <div class="info-step"><div class="step-num">1</div><div class="step-text">Введите сумму и нажмите «Обменять»</div></div>
+      <div class="info-step"><div class="step-num">2</div><div class="step-text">Получите реквизиты для перевода СБП</div></div>
+      <div class="info-step"><div class="step-num">3</div><div class="step-text">Переведите рубли на указанный номер</div></div>
+      <div class="info-step"><div class="step-num">4</div><div class="step-text">Снимите баты в банкомате по QR-коду 🏧</div></div>
+    </div>
+    <div id="infoUSDT" class="hidden">
+      <div class="info-title">ℹ️ Перевод USDT TRC-20</div>
+      <div class="info-step"><div class="step-num">1</div><div class="step-text">Введите сумму и нажмите «Обменять»</div></div>
+      <div class="info-step"><div class="step-num">2</div><div class="step-text">Получите адрес кошелька TRC-20 для перевода</div></div>
+      <div class="info-step"><div class="step-num">3</div><div class="step-text">Отправьте USDT точно в указанной сумме на кошелёк</div></div>
+      <div class="info-step"><div class="step-num">4</div><div class="step-text">Снимите баты в банкомате по QR-коду 🏧</div></div>
+    </div>
+  </div>
+
+  <!-- Mascot -->
+  <div class="mascot-row">
+    <img src="IMG_1943.png" class="mascot-img" alt="ViAndEx mascot" onerror="this.style.display='none'">
+  </div>
+
+</div>
+
+
+<script>
+let rates = {
+  RUB: 2.65,
+  USDT: 31.46,
+  RUB_BONUS: 2.69,
+  BONUS_LIMIT: 10000
+};
+
+let payDir = 'THB'; // which currency user pays WITH (THB = they want baht, so we show dual options)
+let currentDir = 'RUB'; // for openExchange message
+let activeQuick = null;
+
+// ── Helpers ──
+function fmt(n) {
+  if (!n || isNaN(n)) return '—';
+  return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+}
+function fmtInt(n) {
+  if (!n || isNaN(n)) return '—';
+  return Math.round(n).toLocaleString('ru-RU');
+}
+
+// ── Payment direction selector ──
+function setPayDir(dir) {
+  payDir = dir;
+  ['RUB','USDT','THB'].forEach(d => {
+    const btn = document.getElementById('btn'+d);
+    btn.classList.toggle('active', d === dir);
+    const chk = btn.querySelector('.choose-check');
+    if (chk) chk.style.display = d === dir ? 'flex' : 'none';
+    const sub = btn.querySelector('.choose-sub-active');
+    if (sub) sub.style.display = d === dir ? 'block' : 'none';
+    const subN = btn.querySelector('.choose-sub');
+    if (subN) subN.style.display = d !== dir ? 'block' : 'none';
+  });
+
+  // Update label and pill
+  if (dir === 'THB') {
+    document.getElementById('amountLabel').textContent = 'СКОЛЬКО БАТОВ?';
+    document.getElementById('mainInput').placeholder = '10000';
+    document.getElementById('mainInput').previousElementSibling.textContent = '฿';
+    // Show both payment options
+    document.getElementById('needCard').style.display = 'block';
+    document.getElementById('resultCard').style.display = 'block';
+  } else if (dir === 'RUB') {
+    document.getElementById('amountLabel').textContent = 'СКОЛЬКО РУБЛЕЙ?';
+    document.getElementById('mainInput').placeholder = '10000';
+    document.getElementById('mainInput').previousElementSibling.textContent = '₽';
+    document.getElementById('needCard').style.display = 'none';
+    currentDir = 'RUB';
+    document.getElementById('infoSBP').classList.remove('hidden');
+    document.getElementById('infoUSDT').classList.add('hidden');
+  } else if (dir === 'USDT') {
+    document.getElementById('amountLabel').textContent = 'СКОЛЬКО USDT?';
+    document.getElementById('mainInput').placeholder = '100';
+    document.getElementById('mainInput').previousElementSibling.textContent = '₮';
+    document.getElementById('needCard').style.display = 'none';
+    currentDir = 'USDT';
+    document.getElementById('infoSBP').classList.add('hidden');
+    document.getElementById('infoUSDT').classList.remove('hidden');
+  }
+  recalc();
+}
+
+// ── Quick amount buttons ──
+function setQuick(val) {
+  document.getElementById('mainInput').value = val;
+  // highlight
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  const labels = {5000:'5К฿',10000:'10К฿',20000:'20К฿',50000:'50К฿'};
+  document.querySelectorAll('.quick-btn').forEach(b => {
+    if (b.textContent.trim() === labels[val]) b.classList.add('active');
+  });
+  recalc();
+}
+
+// ── Clear ──
+function clearInput() {
+  document.getElementById('mainInput').value = '';
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  recalc();
+}
+
+// ── Main input handler ──
+function onMainInput() {
+  // De-highlight quick btns if user types manually
+  const val = parseFloat(document.getElementById('mainInput').value);
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  const labels = {5000:'5К฿',10000:'10К฿',20000:'20К฿',50000:'50К฿'};
+  document.querySelectorAll('.quick-btn').forEach(b => {
+    if (b.textContent.trim() === labels[val]) b.classList.add('active');
+  });
+  recalc();
+}
+
+// ── Core calculation ──
+function recalc() {
+  const raw = parseFloat(document.getElementById('mainInput').value);
+  const pill = document.getElementById('resultPill');
+  const bigNum = document.getElementById('resultBigNum');
+  const rateRow = document.getElementById('resultRateRow');
+  const ctaAmt = document.getElementById('ctaAmount');
+  const minBadge = document.getElementById('resultMinBadge');
+
+  if (!raw || isNaN(raw)) {
+    pill.textContent = '—';
+    bigNum.textContent = '—';
+    rateRow.textContent = '—';
+    ctaAmt.textContent = '฿';
+    document.getElementById('needRUBVal').textContent = '—';
+    document.getElementById('needUSDTVal').textContent = '—';
+    document.getElementById('needForAmt').textContent = '—';
+    minBadge.style.display = 'none';
+    return;
+  }
+
+  if (payDir === 'THB') {
+    // User wants N baht — show how much RUB or USDT needed
+    const thb = raw;
+    const r = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const rubNeed = thb * r;
+    const usdtNeed = thb / rates.USDT;
+
+    pill.textContent = fmtInt(rubNeed) + ' ₽';
+    bigNum.textContent = fmtInt(thb);
+    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 ₽ = ${(1/r).toFixed(4)} ฿</span>`;
+    ctaAmt.textContent = fmtInt(thb) + ' ฿';
+
+    document.getElementById('needForAmt').textContent = fmtInt(thb) + ' ฿';
+    document.getElementById('needRUBVal').textContent = fmtInt(rubNeed) + ' ₽';
+    document.getElementById('needUSDTVal').textContent = fmt(usdtNeed) + ' ₮';
+
+    minBadge.style.display = thb >= 10000 ? 'inline-flex' : 'none';
+
+  } else if (payDir === 'RUB') {
+    const rub = raw;
+    const estThb = rub / rates.RUB;
+    const r = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const thb = rub / r;
+
+    pill.textContent = fmtInt(thb) + ' ฿';
+    bigNum.textContent = fmtInt(thb);
+    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 ₽ = ${(1/r).toFixed(4)} ฿</span>`;
+    ctaAmt.textContent = fmtInt(thb) + ' ฿';
+    minBadge.style.display = 'none';
+
+  } else if (payDir === 'USDT') {
+    const usdt = raw;
+    const thb = usdt * rates.USDT;
+
+    pill.textContent = fmtInt(thb) + ' ฿';
+    bigNum.textContent = fmtInt(thb);
+    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 USDT = ${rates.USDT} ฿</span>`;
+    ctaAmt.textContent = fmtInt(thb) + ' ฿';
+    minBadge.style.display = 'none';
+  }
+}
+
+// ── Open exchange in Telegram ──
+function openExchange() {
+  const raw = parseFloat(document.getElementById('mainInput').value);
+  const bigNum = document.getElementById('resultBigNum').textContent;
+  const needRUB = document.getElementById('needRUBVal').textContent;
+  const needUSDT = document.getElementById('needUSDTVal').textContent;
+  const pill = document.getElementById('resultPill').textContent;
+
+  let msg = '';
+  if (payDir === 'THB') {
+    // default show RUB option in message, user can clarify
+    const r = (raw <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    msg = `Меняем: RUB Bank на THB\nКурс: ${r} ₽/฿\n\nОтдаёте: ${needRUB} RUB Bank\nПолучаете: ${bigNum} THB`;
+  } else if (payDir === 'RUB') {
+    const estThb = raw / rates.RUB;
+    const r = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    msg = `Меняем: RUB Bank на THB\nКурс: ${r} ₽/฿\n\nОтдаёте: ${raw} RUB Bank\nПолучаете: ${bigNum} THB`;
+  } else {
+    msg = `Меняем: USDT на THB\nКурс: ${rates.USDT} ฿/USDT\n\nОтдаёте: ${raw} USDT\nПолучаете: ${bigNum} THB`;
+  }
+
+  const url = 'https://t.me/Viandth?text=' + encodeURIComponent(msg);
+  if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+    try { Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e) {}
+    Telegram.WebApp.openTelegramLink(url);
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+// ── Rate display update ──
+function updateDisplayedRates() {
+  document.getElementById('rateRUB').textContent = rates.RUB;
+  document.getElementById('rateUSDT').textContent = rates.USDT;
+  document.querySelectorAll('#t1').forEach(el => el.textContent = rates.RUB);
+  document.querySelectorAll('#t2').forEach(el => el.textContent = rates.USDT);
+  const now = new Date();
+  const el = document.getElementById('lastUpdate');
+  if (el) el.textContent = 'Обновлено: ' + now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  recalc();
+}
+
+// ── Google Sheets ──
+const SHEET_ID = '1YEPulZ58qBWoODfrrV1UHUptxTQcA9tAWK6HdSTN-NU';
+const FALLBACK_RATES = { RUB: 2.65, USDT: 31.46, RUB_BONUS: 2.69 };
+let sheetsLoaded = false;
+
+async function fetchRatesFromSheets() {
+  const el = document.getElementById('lastUpdate');
+  const gids = ['0','1','2','3','4','5'];
+  for (const gid of gids) {
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+      const resp = await fetch(url, { cache: 'no-store' });
+      if (!resp.ok) continue;
+      const text = await resp.text();
+      if (!text || text.trim().startsWith('<!')) continue;
+      const rows = text.trim().split('\n').map(r => r.split(',').map(v => v.replace(/"/g,'').trim()));
+      if (rows.length >= 8) {
+        const row = rows[7];
+        const r = parseFloat(row[1]);
+        const u = parseFloat(row[2]);
+        const b = parseFloat(row[3]);
+        if (!isNaN(r) && r > 0) rates.RUB = r;
+        if (!isNaN(u) && u > 0) rates.USDT = u;
+        if (!isNaN(b) && b > 0) rates.RUB_BONUS = b;
+        sheetsLoaded = true;
+        updateDisplayedRates();
+        const now = new Date();
+        if (el) el.innerHTML = '🟢 Из таблицы: ' + now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+        return;
+      }
+    } catch(e) {}
+  }
+  if (!sheetsLoaded) {
+    rates.RUB = FALLBACK_RATES.RUB;
+    rates.USDT = FALLBACK_RATES.USDT;
+    rates.RUB_BONUS = FALLBACK_RATES.RUB_BONUS;
+    updateDisplayedRates();
+  }
+  if (el) el.innerHTML = '⚠️ Нужно опубликовать таблицу (резервный курс)';
+}
+
+// ── Telegram Mini App SDK ──
+(function initTelegram() {
+  if (typeof Telegram === 'undefined' || !Telegram.WebApp) return;
+  const tg = Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+  tg.MainButton.hide();
+  try { tg.setHeaderColor('#FF6B1A'); } catch(e) {}
+  try { tg.setBackgroundColor('#EEF6FF'); } catch(e) {}
+  document.getElementById('mainInput').addEventListener('input', function() {
+    this.value ? tg.BackButton.show() : tg.BackButton.hide();
+  });
+  tg.BackButton.onClick(function() {
+    clearInput();
+    tg.BackButton.hide();
+  });
+  document.body.style.paddingBottom = '20px';
+})();
+
+// Init
+updateDisplayedRates();
+fetchRatesFromSheets();
+setInterval(fetchRatesFromSheets, 10 * 60 * 1000);
+
+// Default: show 10K quick
+setQuick(10000);
+</script>
+
+</body>
+</html>
