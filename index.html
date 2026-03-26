@@ -733,82 +733,55 @@
 
   /* Result card (ATM block) */
   .result-card {
-    background: #fff;
-    border-radius: 20px;
-    padding: 18px 18px 16px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    background: #EEF5FB;
+    border-radius: 22px;
+    padding: 18px 20px 20px;
+    box-shadow: none;
     margin-bottom: 12px;
+    border: none;
   }
   .result-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
   }
   .result-atm-badge {
-    font-size: 12px;
-    font-weight: 700;
-    color: #4A7ACC;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    font-size: 13px; font-weight: 700; color: #3A4A6A;
+    display: flex; align-items: center; gap: 6px;
   }
-  .atm-dot { color: #5BC47A; font-size: 10px; }
+  .atm-dot { color: #4DC87A; font-size: 11px; }
   .result-tg-link {
-    font-size: 12px;
-    font-weight: 700;
-    color: #8A9BBC;
-    text-decoration: none;
-    background: #EEF4FF;
-    padding: 4px 10px;
-    border-radius: 20px;
+    font-size: 12px; font-weight: 700; color: #6A84AA; text-decoration: none;
+    background: rgba(255,255,255,0.75); padding: 5px 12px;
+    border-radius: 20px; display: flex; align-items: center; gap: 4px;
   }
   .result-card-label {
-    font-size: 13px;
-    color: #8A9BBC;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 4px;
+    font-size: 14px; color: #6A84AA; font-weight: 600;
+    text-align: center; margin-bottom: 6px;
   }
   .result-big-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; margin-bottom: 10px;
   }
   .result-big-num {
-    font-size: 52px;
-    font-weight: 900;
-    color: var(--text);
-    letter-spacing: -1px;
-    line-height: 1;
+    font-size: 58px; font-weight: 900; color: #1A2340;
+    letter-spacing: -2px; line-height: 1;
   }
   .result-big-icon {
-    width: 48px; height: 48px;
-    border-radius: 14px;
-    background: #FFF0E6;
-    color: var(--orange);
-    font-size: 24px;
-    font-weight: 900;
+    width: 50px; height: 50px; border-radius: 14px;
+    background: #FFE8D4; color: var(--orange);
+    font-size: 26px; font-weight: 900;
     display: flex; align-items: center; justify-content: center;
   }
-  .result-min-badge {
-    background: #EEF4FF;
-    color: #4A7ACC;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    margin: 0 auto 8px;
-    width: fit-content;
+  .result-range-badge {
+    background: rgba(255,255,255,0.75);
+    color: #5A7AAA; border-radius: 20px;
+    padding: 5px 16px; font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 5px;
+    margin: 0 auto 10px;
+    border: 1px solid rgba(90,122,170,0.15);
   }
   .result-rate-row {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--orange);
-    text-align: left;
-    margin-top: 6px;
+    font-size: 15px; font-weight: 900;
+    color: var(--orange); text-align: left; margin-top: 6px;
   }
 
   /* Need card (payment breakdown) */
@@ -888,6 +861,238 @@
   .rates-top-row .rates-card-title { margin-bottom: 0; }
   .rates-top-row .last-update { font-size: 10px; color: var(--text-sub); opacity: 0.7; }
 
+
+  /* ═══ UPDATED CALCULATOR STYLES ═══ */
+  .sec-label {
+    font-size: 11px; font-weight: 900; letter-spacing: 1.8px;
+    color: #8A9BBC; margin: 18px 0 8px; padding: 0 2px;
+  }
+  .choose-card {
+    background: #fff; border-radius: 20px; padding: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 4px;
+  }
+  .choose-row { display: flex; gap: 10px; }
+  .choose-btn {
+    flex: 1; background: #F4F7FB; border: 2px solid transparent;
+    border-radius: 16px; padding: 12px 6px; cursor: pointer;
+    font-family: 'Nunito', sans-serif; display: flex;
+    flex-direction: column; align-items: center; gap: 5px;
+    position: relative; transition: all 0.2s;
+  }
+  .choose-btn:active { transform: scale(0.95); }
+  /* RUB active */
+  .choose-btn.active-rub { background: #EEF3FF; border-color: #4A7ACC; }
+  /* USDT active */
+  .choose-btn.active-usdt { background: #E8F7EF; border-color: #2A9E78; }
+  /* THB active */
+  .choose-btn.active-thb { background: #FFF4EC; border-color: var(--orange); }
+
+  .choose-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 900;
+    background: #E0E8F4; color: #B0BDD4;
+    transition: all 0.2s;
+  }
+  /* Active icon colors */
+  .choose-btn.active-rub .choose-icon { background: linear-gradient(135deg,#4A7ACC,#6B9AE8); color:#fff; }
+  .choose-btn.active-usdt .choose-icon { background: linear-gradient(135deg,#2A9E78,#3EC490); color:#fff; }
+  .choose-btn.active-thb .choose-icon { background: linear-gradient(135deg,var(--orange),var(--orange-light)); color:#fff; }
+
+  .choose-name { font-size: 13px; font-weight: 800; color: var(--text); }
+  .choose-sub { font-size: 10px; color: #8A9BBC; font-weight: 600; text-align: center; }
+  .choose-sub-active { font-size: 10px; font-weight: 700; text-align: center; display: none; }
+  .choose-btn.active-rub .choose-sub-active { color: #4A7ACC; }
+  .choose-btn.active-usdt .choose-sub-active { color: #2A9E78; }
+  .choose-btn.active-thb .choose-sub-active { color: var(--orange); }
+
+  .choose-check {
+    position: absolute; top: 6px; right: 6px;
+    width: 20px; height: 20px; border-radius: 50%;
+    color: #fff; font-size: 11px; font-weight: 900;
+    display: none; align-items: center; justify-content: center;
+  }
+  .choose-btn.active-rub .choose-check { display: flex; background: #4A7ACC; }
+  .choose-btn.active-usdt .choose-check { display: flex; background: #2A9E78; }
+  .choose-btn.active-thb .choose-check { display: flex; background: var(--orange); }
+
+  /* Amount input */
+  .amount-card {
+    background: #fff; border-radius: 20px; padding: 16px 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 10px;
+  }
+  .amount-row { display: flex; align-items: center; gap: 8px; }
+  .amount-thb-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    font-size: 20px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: #FFF0E6; color: var(--orange); transition: all 0.2s;
+  }
+  .amount-thb-icon.rub-mode { background: #EEF3FF; color: #4A7ACC; }
+  .amount-thb-icon.usdt-mode { background: #E8F7EF; color: #2A9E78; }
+  .amount-thb-icon.thb-mode { background: #FFF0E6; color: var(--orange); }
+  .amount-input {
+    flex: 1; border: none; outline: none;
+    font-family: 'Nunito', sans-serif; font-size: 28px; font-weight: 900;
+    color: var(--text); background: transparent; min-width: 0; -webkit-appearance: none;
+  }
+  .amount-input::placeholder { color: #C8D4E8; }
+  .amount-arrow { font-size: 16px; color: #B0BDD4; flex-shrink: 0; }
+  .amount-result-pill {
+    background: #EEF4FF; border-radius: 20px; padding: 7px 14px;
+    font-size: 15px; font-weight: 800; color: #4A7ACC;
+    white-space: nowrap; flex-shrink: 0; min-width: 80px; text-align: center;
+  }
+  .amount-clear {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 2px solid #D8E2EE; background: transparent;
+    color: #9AAAC0; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* Quick buttons */
+  .quick-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .quick-btn {
+    flex: 1; padding: 11px 4px; border-radius: 14px;
+    border: 2px solid #E4EAF4; background: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+    color: var(--text); cursor: pointer; transition: all 0.18s; text-align: center;
+  }
+  .quick-btn:active { transform: scale(0.95); }
+  .quick-btn.active-rub { background: #EEF3FF; border-color: #4A7ACC; color: #4A7ACC; }
+  .quick-btn.active-usdt { background: #E8F7EF; border-color: #2A9E78; color: #2A9E78; }
+  .quick-btn.active-thb { background: #FFF0E6; border-color: var(--orange); color: var(--orange); }
+
+  /* Result card (ATM) */
+  .result-card {
+    background: #fff; border-radius: 20px; padding: 18px 18px 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06); margin-bottom: 12px;
+  }
+  .result-card-top {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+  }
+  .result-atm-badge { font-size: 12px; font-weight: 700; color: #4A7ACC; display: flex; align-items: center; gap: 5px; }
+  .atm-dot { color: #5BC47A; font-size: 10px; }
+  .result-tg-link {
+    font-size: 12px; font-weight: 700; color: #8A9BBC; text-decoration: none;
+    background: #EEF4FF; padding: 4px 10px; border-radius: 20px;
+  }
+  .result-card-label { font-size: 13px; color: #8A9BBC; font-weight: 600; text-align: center; margin-bottom: 4px; }
+  .result-big-row {
+    display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 6px;
+  }
+  .result-big-num { font-size: 52px; font-weight: 900; color: var(--text); letter-spacing: -1px; line-height: 1; }
+  .result-big-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    background: #FFF0E6; color: var(--orange); font-size: 24px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .result-range-badge {
+    background: #EEF4FF; color: #4A7ACC; border-radius: 20px;
+    padding: 4px 14px; font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+    margin: 0 auto 8px; width: fit-content;
+  }
+  .result-rate-row { font-size: 14px; font-weight: 800; color: var(--orange); text-align: left; margin-top: 6px; }
+
+  /* Need card */
+  .need-card {
+    background: #fff; border: 2px solid rgba(255,107,26,0.15);
+    border-radius: 20px; padding: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.05); margin-bottom: 16px;
+  }
+  .need-title {
+    font-size: 14px; font-weight: 800; color: var(--text);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 6px;
+  }
+  .need-icon-i {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--orange); color: var(--orange);
+    font-size: 13px; font-weight: 900;
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .need-options-row { display: flex; align-items: center; gap: 10px; }
+  .need-opt { flex: 1; border-radius: 16px; padding: 14px 12px; display: flex; align-items: center; gap: 8px; }
+  .need-opt.blue { background: #EEF4FF; }
+  .need-opt.green { background: #E8F7EF; }
+  .need-dot { font-size: 10px; flex-shrink: 0; }
+  .blue-dot { color: #4A7ACC; }
+  .green-dot { color: #2A9E78; }
+  .need-opt-val { font-size: 18px; font-weight: 900; }
+  .need-opt.blue .need-opt-val { color: #4A7ACC; }
+  .need-opt.green .need-opt-val { color: #2A9E78; }
+  .need-opt-sub { font-size: 11px; font-weight: 600; color: #8A9BBC; margin-top: 2px; }
+  .need-or { font-size: 13px; font-weight: 700; color: #8A9BBC; flex-shrink: 0; }
+
+  /* Warning text */
+  .warn-text {
+    font-size: 11px; font-weight: 800; color: #E07A20;
+    text-align: center; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-bottom: 8px; opacity: 0.85;
+  }
+
+  /* CTA button */
+  .cta-btn {
+    width: 100%; padding: 17px; border-radius: 16px; border: none;
+    font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
+    cursor: pointer; letter-spacing: 0.3px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all 0.2s; margin-bottom: 16px;
+  }
+  .cta-btn.active-cta {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-light) 100%);
+    color: #fff; box-shadow: 0 6px 24px rgba(255,107,26,0.4);
+  }
+  .cta-btn.inactive-cta {
+    background: #D8E2EE; color: #8A9BBC;
+    box-shadow: none; cursor: default;
+  }
+  .cta-btn.active-cta:active { transform: scale(0.97); }
+  .cta-amount {
+    background: rgba(255,255,255,0.22); border-radius: 20px;
+    padding: 4px 12px; font-size: 15px; font-weight: 900;
+    margin-left: 4px; min-width: 60px; text-align: center;
+  }
+
+  /* Info card colored by mode */
+  .info-card {
+    border-radius: 22px; padding: 20px; margin-bottom: 18px;
+  }
+  .info-card.info-rub { background: #EEF3FF; border: 1.5px solid rgba(74,122,204,0.2); }
+  .info-card.info-usdt { background: #E8F7EF; border: 1.5px solid rgba(42,158,120,0.2); }
+  .info-card.info-thb { background: #FFF4EC; border: 1.5px solid rgba(255,107,26,0.2); }
+  .info-title { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  .info-card.info-rub .info-title { color: #4A7ACC; }
+  .info-card.info-usdt .info-title { color: #2A9E78; }
+  .info-card.info-thb .info-title { color: var(--orange); }
+  .info-step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
+  .info-step:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 13px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .info-card.info-rub .step-num { background: rgba(74,122,204,0.15); color: #4A7ACC; }
+  .info-card.info-usdt .step-num { background: rgba(42,158,120,0.15); color: #2A9E78; }
+  .info-card.info-thb .step-num { background: rgba(255,107,26,0.15); color: var(--orange); }
+  .step-text { font-size: 13px; font-weight: 700; line-height: 1.5; padding-top: 4px; color: var(--text); }
+
+  /* Rates card */
+  .rates-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .rates-top-row .rates-card-title { margin-bottom: 0; }
+
+  /* Mascot */
+  .mascot-row { display: flex; justify-content: center; margin-bottom: 4px; }
+  .mascot-img {
+    width: 100px; height: 100px; object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(255,107,26,0.25));
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+  .hidden { display: none !important; }
+  @media (max-width: 360px) { .result-big-num { font-size: 40px; } .amount-input { font-size: 22px; } }
+
 </style>
 </head>
 <body>
@@ -918,9 +1123,10 @@
   </div>
 </div>
 
+
 <div class="main">
 
-  <!-- RATES CARD — compact -->
+  <!-- RATES CARD -->
   <div class="rates-card">
     <div class="rates-top-row">
       <div class="rates-card-title">📊 Актуальные курсы</div>
@@ -954,42 +1160,39 @@
     </div>
   </div>
 
-  <!-- ═══ NEW CALCULATOR ═══ -->
-
-  <!-- STEP 1: What to receive -->
-  <div class="sec-label">ХОЧУ ПОЛУЧИТЬ</div>
+  <!-- STEP 1: Direction selector -->
+  <div class="sec-label" id="secLabel">ВЫ ОТДАЁТЕ</div>
   <div class="choose-card">
     <div class="choose-row">
-      <button class="choose-btn" id="btnRUB" onclick="setPayDir('RUB')">
-        <div class="choose-icon rub-ic">₽</div>
-        <div class="choose-info">
-          <div class="choose-name">Рубли</div>
-          <div class="choose-sub">СБП · Банк</div>
-        </div>
+      <button class="choose-btn active-rub" id="btnRUB" onclick="setPayDir('RUB')">
+        <div class="choose-icon">₽</div>
+        <div class="choose-name">Рубли</div>
+        <div class="choose-sub">СБП</div>
+        <div class="choose-sub-active">СБП</div>
+        <div class="choose-check">✓</div>
       </button>
       <button class="choose-btn" id="btnUSDT" onclick="setPayDir('USDT')">
-        <div class="choose-icon usdt-ic">₮</div>
-        <div class="choose-info">
-          <div class="choose-name">USDT</div>
-          <div class="choose-sub">TRC20 · ERC20</div>
-        </div>
+        <div class="choose-icon">₮</div>
+        <div class="choose-name">USDT</div>
+        <div class="choose-sub">Только с бирж</div>
+        <div class="choose-sub-active">Только с бирж</div>
+        <div class="choose-check">✓</div>
       </button>
-      <button class="choose-btn active" id="btnTHB" onclick="setPayDir('THB')">
-        <div class="choose-icon thb-ic">฿</div>
-        <div class="choose-info">
-          <div class="choose-name">Баты</div>
-          <div class="choose-sub-active">Хочу получить</div>
-        </div>
+      <button class="choose-btn" id="btnTHB" onclick="setPayDir('THB')">
+        <div class="choose-icon">฿</div>
+        <div class="choose-name">Баты</div>
+        <div class="choose-sub">ATM QR-код</div>
+        <div class="choose-sub-active">ATM QR-код</div>
         <div class="choose-check">✓</div>
       </button>
     </div>
   </div>
 
-  <!-- STEP 2: Amount input -->
-  <div class="sec-label" id="amountLabel">СКОЛЬКО БАТОВ?</div>
+  <!-- STEP 2: Amount label + input -->
+  <div class="sec-label" id="amountLabel">СКОЛЬКО РУБЛЕЙ?</div>
   <div class="amount-card">
     <div class="amount-row">
-      <div class="amount-thb-icon">฿</div>
+      <div class="amount-thb-icon rub-mode" id="amountIcon">₽</div>
       <input class="amount-input" id="mainInput" type="number" inputmode="numeric"
         placeholder="10000" oninput="onMainInput()">
       <div class="amount-arrow">→</div>
@@ -999,19 +1202,17 @@
   </div>
 
   <!-- Quick amount buttons -->
-  <div class="quick-row">
-    <button class="quick-btn" onclick="setQuick(5000)">5К฿</button>
-    <button class="quick-btn" id="q10" onclick="setQuick(10000)">10К฿</button>
-    <button class="quick-btn" onclick="setQuick(20000)">20К฿</button>
-    <button class="quick-btn" onclick="setQuick(50000)">50К฿</button>
+  <div class="quick-row" id="quickRow">
+    <button class="quick-btn" onclick="setQuick(0)">10к ₽</button>
+    <button class="quick-btn" onclick="setQuick(1)">30к ₽</button>
+    <button class="quick-btn" onclick="setQuick(2)">50к ₽</button>
+    <button class="quick-btn" onclick="setQuick(3)">100к ₽</button>
   </div>
 
-  <!-- STEP 3: Result block -->
+  <!-- RESULT CARD (ATM) — hidden when THB selected -->
   <div class="result-card" id="resultCard">
     <div class="result-card-top">
-      <div class="result-atm-badge">
-        <span class="atm-dot">●</span> Банкомат · ATM QR
-      </div>
+      <div class="result-atm-badge"><span class="atm-dot">●</span> Банкомат · ATM QR</div>
       <a class="result-tg-link" href="https://t.me/ViAnd_Ex" target="_blank">✈ @ViAnd_Ex</a>
     </div>
     <div class="result-card-label">Вы получите наличными</div>
@@ -1019,20 +1220,22 @@
       <div class="result-big-num" id="resultBigNum">—</div>
       <div class="result-big-icon">฿</div>
     </div>
-    <div class="result-min-badge" id="resultMinBadge" style="display:none">
-      🏷 от 10 000 ฿
+    <div style="display:flex; justify-content:center; margin-bottom:4px;">
+      <div class="result-range-badge" id="resultRangeBadge" style="display:none">
+        🏷 до 10 000 ฿
+      </div>
     </div>
     <div class="result-rate-row" id="resultRateRow">—</div>
   </div>
 
-  <!-- Payment needed block -->
-  <div class="need-card" id="needCard">
+  <!-- NEED CARD — shown only when THB selected -->
+  <div class="need-card" id="needCard" style="display:none">
     <div class="need-title">
       <span class="need-icon-i">ℹ</span>
       Для <span id="needForAmt">—</span> нужно:
     </div>
     <div class="need-options-row">
-      <div class="need-opt blue" id="needRUB">
+      <div class="need-opt blue">
         <span class="need-dot blue-dot">●</span>
         <div>
           <div class="need-opt-val" id="needRUBVal">—</div>
@@ -1040,7 +1243,7 @@
         </div>
       </div>
       <div class="need-or">или</div>
-      <div class="need-opt green" id="needUSDT">
+      <div class="need-opt green">
         <span class="need-dot green-dot">●</span>
         <div>
           <div class="need-opt-val" id="needUSDTVal">—</div>
@@ -1050,15 +1253,8 @@
     </div>
   </div>
 
-  <!-- CTA -->
-  <button class="cta-btn" id="ctaExchange" onclick="openExchange()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
-    Обменять на баты
-    <span class="cta-amount" id="ctaAmount">฿</span>
-  </button>
-
-  <!-- Instructions — toggle by payment method -->
-  <div class="info-card" id="infoCard">
+  <!-- Instructions -->
+  <div class="info-card info-rub" id="infoCard">
     <div id="infoSBP">
       <div class="info-title">ℹ️ Оплата через СБП</div>
       <div class="info-step"><div class="step-num">1</div><div class="step-text">Введите сумму и нажмите «Обменять»</div></div>
@@ -1073,7 +1269,23 @@
       <div class="info-step"><div class="step-num">3</div><div class="step-text">Отправьте USDT точно в указанной сумме на кошелёк</div></div>
       <div class="info-step"><div class="step-num">4</div><div class="step-text">Снимите баты в банкомате по QR-коду 🏧</div></div>
     </div>
+    <div id="infoTHB" class="hidden">
+      <div class="info-title">ℹ️ Оплата через СБП или USDT</div>
+      <div class="info-step"><div class="step-num">1</div><div class="step-text">Укажите сколько бат хотите получить</div></div>
+      <div class="info-step"><div class="step-num">2</div><div class="step-text">Выберите удобный способ оплаты</div></div>
+      <div class="info-step"><div class="step-num">3</div><div class="step-text">Переведите рубли по СБП или USDT на кошелёк</div></div>
+      <div class="info-step"><div class="step-num">4</div><div class="step-text">Снимите баты в банкомате по QR-коду 🏧</div></div>
+    </div>
   </div>
+
+  <!-- Warning + CTA -->
+  <div class="warn-text" id="warnText" style="display:none">
+    ⚠ Сумма должна быть кратна 100 батам
+  </div>
+  <button class="cta-btn inactive-cta" id="ctaExchange" onclick="openExchange()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+    Введите сумму
+  </button>
 
   <!-- Mascot -->
   <div class="mascot-row">
@@ -1082,184 +1294,234 @@
 
 </div>
 
-
 <script>
-let rates = {
-  RUB: 2.65,
-  USDT: 31.46,
-  RUB_BONUS: 2.69,
-  BONUS_LIMIT: 10000
-};
+// ── Rates (fallback values) ──
+let rates = { RUB: 2.65, USDT: 31.46, RUB_BONUS: 2.69, BONUS_LIMIT: 10000 };
+let payDir = 'RUB'; // 'RUB' | 'USDT' | 'THB'
 
-let payDir = 'THB'; // which currency user pays WITH (THB = they want baht, so we show dual options)
-let currentDir = 'RUB'; // for openExchange message
-let activeQuick = null;
+// Quick button configs per mode
+const QUICK_PRESETS = {
+  RUB:  [{label:'10к ₽', val:10000},{label:'30к ₽', val:30000},{label:'50к ₽', val:50000},{label:'100к ₽', val:100000}],
+  USDT: [{label:'100 ₮', val:100},{label:'300 ₮', val:300},{label:'500 ₮', val:500},{label:'1к ₮', val:1000}],
+  THB:  [{label:'5к ฿', val:5000},{label:'10к ฿', val:10000},{label:'20к ฿', val:20000},{label:'50к ฿', val:50000}]
+};
+let activeQuickIdx = -1;
 
 // ── Helpers ──
-function fmt(n) {
+function fmt(n, dec=2) {
   if (!n || isNaN(n)) return '—';
-  return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+  return n.toLocaleString('ru-RU', {maximumFractionDigits: dec});
 }
 function fmtInt(n) {
   if (!n || isNaN(n)) return '—';
   return Math.round(n).toLocaleString('ru-RU');
 }
+function roundTo100(n) { return Math.round(n / 100) * 100; }
 
-// ── Payment direction selector ──
+// ── Set payment direction ──
 function setPayDir(dir) {
   payDir = dir;
-  ['RUB','USDT','THB'].forEach(d => {
+  const dirs = ['RUB','USDT','THB'];
+  const activeClasses = {RUB:'active-rub', USDT:'active-usdt', THB:'active-thb'};
+
+  dirs.forEach(d => {
     const btn = document.getElementById('btn'+d);
-    btn.classList.toggle('active', d === dir);
-    const chk = btn.querySelector('.choose-check');
-    if (chk) chk.style.display = d === dir ? 'flex' : 'none';
-    const sub = btn.querySelector('.choose-sub-active');
-    if (sub) sub.style.display = d === dir ? 'block' : 'none';
-    const subN = btn.querySelector('.choose-sub');
-    if (subN) subN.style.display = d !== dir ? 'block' : 'none';
+    btn.classList.remove('active-rub','active-usdt','active-thb');
+    if (d === dir) btn.classList.add(activeClasses[d]);
   });
 
-  // Update label and pill
-  if (dir === 'THB') {
-    document.getElementById('amountLabel').textContent = 'СКОЛЬКО БАТОВ?';
-    document.getElementById('mainInput').placeholder = '10000';
-    document.getElementById('mainInput').previousElementSibling.textContent = '฿';
-    // Show both payment options
-    document.getElementById('needCard').style.display = 'block';
-    document.getElementById('resultCard').style.display = 'block';
-  } else if (dir === 'RUB') {
-    document.getElementById('amountLabel').textContent = 'СКОЛЬКО РУБЛЕЙ?';
-    document.getElementById('mainInput').placeholder = '10000';
-    document.getElementById('mainInput').previousElementSibling.textContent = '₽';
-    document.getElementById('needCard').style.display = 'none';
-    currentDir = 'RUB';
-    document.getElementById('infoSBP').classList.remove('hidden');
+  // Section label
+  const secLabel = document.getElementById('secLabel');
+  secLabel.textContent = dir === 'THB' ? 'ХОЧУ ПОЛУЧИТЬ' : 'ВЫ ОТДАЁТЕ';
+
+  // Amount label & icon
+  const labels = {RUB:'СКОЛЬКО РУБЛЕЙ?', USDT:'СКОЛЬКО USDT?', THB:'СКОЛЬКО БАТОВ?'};
+  const icons  = {RUB:'₽', USDT:'₮', THB:'฿'};
+  const iconModes = {RUB:'rub-mode', USDT:'usdt-mode', THB:'thb-mode'};
+  document.getElementById('amountLabel').textContent = labels[dir];
+  const amtIcon = document.getElementById('amountIcon');
+  amtIcon.textContent = icons[dir];
+  amtIcon.className = 'amount-thb-icon ' + iconModes[dir];
+
+  // Placeholder
+  const placeholders = {RUB:'10000', USDT:'100', THB:'10000'};
+  document.getElementById('mainInput').placeholder = placeholders[dir];
+
+  // Show/hide result vs need card
+  document.getElementById('resultCard').style.display = dir === 'THB' ? 'none' : 'block';
+  document.getElementById('needCard').style.display   = dir === 'THB' ? 'block' : 'none';
+
+  // Instructions color + content
+  const infoCard = document.getElementById('infoCard');
+  infoCard.className = 'info-card';
+  if (dir === 'RUB' || dir === 'THB') {
+    infoCard.classList.add(dir === 'THB' ? 'info-thb' : 'info-rub');
+    document.getElementById('infoSBP').classList.toggle('hidden', dir === 'THB');
     document.getElementById('infoUSDT').classList.add('hidden');
-  } else if (dir === 'USDT') {
-    document.getElementById('amountLabel').textContent = 'СКОЛЬКО USDT?';
-    document.getElementById('mainInput').placeholder = '100';
-    document.getElementById('mainInput').previousElementSibling.textContent = '₮';
-    document.getElementById('needCard').style.display = 'none';
-    currentDir = 'USDT';
+    document.getElementById('infoTHB').classList.toggle('hidden', dir !== 'THB');
+  } else {
+    infoCard.classList.add('info-usdt');
     document.getElementById('infoSBP').classList.add('hidden');
     document.getElementById('infoUSDT').classList.remove('hidden');
+    document.getElementById('infoTHB').classList.add('hidden');
   }
+
+  // Rebuild quick buttons
+  buildQuickBtns();
+  activeQuickIdx = -1;
+
+  // Clear input + recalc
+  document.getElementById('mainInput').value = '';
   recalc();
 }
 
-// ── Quick amount buttons ──
-function setQuick(val) {
-  document.getElementById('mainInput').value = val;
-  // highlight
-  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
-  const labels = {5000:'5К฿',10000:'10К฿',20000:'20К฿',50000:'50К฿'};
-  document.querySelectorAll('.quick-btn').forEach(b => {
-    if (b.textContent.trim() === labels[val]) b.classList.add('active');
+// ── Quick buttons ──
+function buildQuickBtns() {
+  const row = document.getElementById('quickRow');
+  const presets = QUICK_PRESETS[payDir];
+  row.innerHTML = '';
+  presets.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-btn';
+    btn.textContent = p.label;
+    btn.onclick = () => setQuick(i);
+    row.appendChild(btn);
   });
+}
+
+function setQuick(idx) {
+  activeQuickIdx = idx;
+  const val = QUICK_PRESETS[payDir][idx].val;
+  document.getElementById('mainInput').value = val;
+  updateQuickHighlight();
   recalc();
 }
 
-// ── Clear ──
+function updateQuickHighlight() {
+  const btns = document.querySelectorAll('.quick-btn');
+  const activeClass = {RUB:'active-rub', USDT:'active-usdt', THB:'active-thb'}[payDir];
+  btns.forEach((b, i) => {
+    b.classList.remove('active-rub','active-usdt','active-thb');
+    if (i === activeQuickIdx) b.classList.add(activeClass);
+  });
+}
+
 function clearInput() {
   document.getElementById('mainInput').value = '';
-  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  activeQuickIdx = -1;
+  updateQuickHighlight();
   recalc();
 }
 
-// ── Main input handler ──
 function onMainInput() {
-  // De-highlight quick btns if user types manually
+  // Check if value matches a quick preset
   const val = parseFloat(document.getElementById('mainInput').value);
-  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
-  const labels = {5000:'5К฿',10000:'10К฿',20000:'20К฿',50000:'50К฿'};
-  document.querySelectorAll('.quick-btn').forEach(b => {
-    if (b.textContent.trim() === labels[val]) b.classList.add('active');
-  });
+  activeQuickIdx = -1;
+  QUICK_PRESETS[payDir].forEach((p, i) => { if (p.val === val) activeQuickIdx = i; });
+  updateQuickHighlight();
   recalc();
 }
 
 // ── Core calculation ──
 function recalc() {
   const raw = parseFloat(document.getElementById('mainInput').value);
-  const pill = document.getElementById('resultPill');
-  const bigNum = document.getElementById('resultBigNum');
-  const rateRow = document.getElementById('resultRateRow');
-  const ctaAmt = document.getElementById('ctaAmount');
-  const minBadge = document.getElementById('resultMinBadge');
+  const pill     = document.getElementById('resultPill');
+  const bigNum   = document.getElementById('resultBigNum');
+  const rateRow  = document.getElementById('resultRateRow');
+  const ctaBtn   = document.getElementById('ctaExchange');
+  const warnText = document.getElementById('warnText');
+  const rangeBadge = document.getElementById('resultRangeBadge');
 
-  if (!raw || isNaN(raw)) {
+  if (!raw || isNaN(raw) || raw <= 0) {
     pill.textContent = '—';
-    bigNum.textContent = '—';
-    rateRow.textContent = '—';
-    ctaAmt.textContent = '฿';
-    document.getElementById('needRUBVal').textContent = '—';
+    if (bigNum) bigNum.textContent = '—';
+    if (rateRow) rateRow.textContent = '—';
+    document.getElementById('needRUBVal').textContent  = '—';
     document.getElementById('needUSDTVal').textContent = '—';
-    document.getElementById('needForAmt').textContent = '—';
-    minBadge.style.display = 'none';
+    document.getElementById('needForAmt').textContent  = '—';
+    if (rangeBadge) rangeBadge.style.display = 'none';
+    warnText.style.display = 'none';
+    // CTA inactive
+    ctaBtn.className = 'cta-btn inactive-cta';
+    ctaBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg> Введите сумму';
     return;
   }
 
-  if (payDir === 'THB') {
-    // User wants N baht — show how much RUB or USDT needed
-    const thb = raw;
-    const r = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
-    const rubNeed = thb * r;
-    const usdtNeed = thb / rates.USDT;
+  let thbResult = 0;
+  let usedRate = rates.RUB;
+  let roundedThb = 0;
 
-    pill.textContent = fmtInt(rubNeed) + ' ₽';
-    bigNum.textContent = fmtInt(thb);
-    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 ₽ = ${(1/r).toFixed(4)} ฿</span>`;
-    ctaAmt.textContent = fmtInt(thb) + ' ฿';
-
-    document.getElementById('needForAmt').textContent = fmtInt(thb) + ' ฿';
-    document.getElementById('needRUBVal').textContent = fmtInt(rubNeed) + ' ₽';
-    document.getElementById('needUSDTVal').textContent = fmt(usdtNeed) + ' ₮';
-
-    minBadge.style.display = thb >= 10000 ? 'inline-flex' : 'none';
-
-  } else if (payDir === 'RUB') {
-    const rub = raw;
-    const estThb = rub / rates.RUB;
-    const r = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
-    const thb = rub / r;
-
-    pill.textContent = fmtInt(thb) + ' ฿';
-    bigNum.textContent = fmtInt(thb);
-    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 ₽ = ${(1/r).toFixed(4)} ฿</span>`;
-    ctaAmt.textContent = fmtInt(thb) + ' ฿';
-    minBadge.style.display = 'none';
+  if (payDir === 'RUB') {
+    const estThb = raw / rates.RUB;
+    usedRate = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    thbResult = raw / usedRate;
+    roundedThb = Math.floor(thbResult);
+    pill.textContent = fmtInt(roundedThb) + ' ฿';
+    if (bigNum) bigNum.textContent = fmtInt(roundedThb);
+    if (rateRow) rateRow.innerHTML = `↗ 1 ₽ = ${usedRate} ฿`;
+    if (rangeBadge) {
+      rangeBadge.textContent = (roundedThb <= rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
+      rangeBadge.style.display = 'inline-flex';
+    }
 
   } else if (payDir === 'USDT') {
-    const usdt = raw;
-    const thb = usdt * rates.USDT;
+    thbResult = raw * rates.USDT;
+    roundedThb = Math.floor(thbResult);
+    pill.textContent = fmtInt(roundedThb) + ' ฿';
+    if (bigNum) bigNum.textContent = fmtInt(roundedThb);
+    if (rateRow) rateRow.innerHTML = `↗ 1 USDT = ${rates.USDT} ฿`;
+    if (rangeBadge) {
+      rangeBadge.textContent = (roundedThb <= rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
+      rangeBadge.style.display = 'inline-flex';
+    }
 
-    pill.textContent = fmtInt(thb) + ' ฿';
-    bigNum.textContent = fmtInt(thb);
-    rateRow.innerHTML = `<span style="color:var(--orange)">↗ 1 USDT = ${rates.USDT} ฿</span>`;
-    ctaAmt.textContent = fmtInt(thb) + ' ฿';
-    minBadge.style.display = 'none';
+  } else if (payDir === 'THB') {
+    const thb = Math.floor(raw);
+    usedRate = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const rubNeed  = thb * usedRate;
+    const usdtNeed = thb / rates.USDT;
+    roundedThb = thb;
+
+    pill.textContent = fmtInt(rubNeed) + ' ₽';
+    document.getElementById('needForAmt').textContent  = fmtInt(thb) + ' ฿';
+    document.getElementById('needRUBVal').textContent  = fmtInt(rubNeed) + ' ₽';
+    document.getElementById('needUSDTVal').textContent = fmt(usdtNeed) + ' ₮';
   }
+
+  // Warning: auto-round notice — show briefly if raw gave unrounded thb
+  const isRounded = (roundedThb % 100 !== 0) && payDir !== 'THB';
+  warnText.style.display = isRounded ? 'block' : 'none';
+
+  // CTA active
+  const ctaAmtText = fmtInt(roundedThb) + ' ฿';
+  ctaBtn.className = 'cta-btn active-cta';
+  ctaBtn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg> Обменять <span class="cta-amount">${ctaAmtText}</span>`;
+  ctaBtn.onclick = openExchange;
 }
 
-// ── Open exchange in Telegram ──
+// ── Open exchange ──
 function openExchange() {
+  if (document.getElementById('ctaExchange').classList.contains('inactive-cta')) return;
   const raw = parseFloat(document.getElementById('mainInput').value);
-  const bigNum = document.getElementById('resultBigNum').textContent;
-  const needRUB = document.getElementById('needRUBVal').textContent;
-  const needUSDT = document.getElementById('needUSDTVal').textContent;
-  const pill = document.getElementById('resultPill').textContent;
+  if (!raw || isNaN(raw)) return;
 
   let msg = '';
-  if (payDir === 'THB') {
-    // default show RUB option in message, user can clarify
-    const r = (raw <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
-    msg = `Меняем: RUB Bank на THB\nКурс: ${r} ₽/฿\n\nОтдаёте: ${needRUB} RUB Bank\nПолучаете: ${bigNum} THB`;
-  } else if (payDir === 'RUB') {
+
+  if (payDir === 'RUB') {
     const estThb = raw / rates.RUB;
     const r = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
-    msg = `Меняем: RUB Bank на THB\nКурс: ${r} ₽/฿\n\nОтдаёте: ${raw} RUB Bank\nПолучаете: ${bigNum} THB`;
-  } else {
-    msg = `Меняем: USDT на THB\nКурс: ${rates.USDT} ฿/USDT\n\nОтдаёте: ${raw} USDT\nПолучаете: ${bigNum} THB`;
+    const thb = Math.floor(raw / r);
+    msg = `Здравствуйте! Хочу обменять:\n\nМеняем: Руб-СБП на THB\nКурс: ${r}\n\nОтдаёте: ${fmtInt(raw)} ₽\nПолучаете: ${fmtInt(thb)} ฿`;
+
+  } else if (payDir === 'USDT') {
+    const thb = Math.floor(raw * rates.USDT);
+    msg = `Здравствуйте! Хочу обменять:\n\nМеняем: USDT на THB\nКурс: ${rates.USDT}\n\nОтдаёте: ${raw} USDT\nПолучаете: ${fmtInt(thb)} ฿`;
+
+  } else if (payDir === 'THB') {
+    const thb = Math.floor(raw);
+    const r = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const rub = Math.round(thb * r);
+    msg = `Здравствуйте! Хочу обменять:\n\nМеняем: Руб-СБП на THB\nКурс: ${r}\n\nОтдаёте: ${fmtInt(rub)} ₽\nПолучаете: ${fmtInt(thb)} ฿`;
   }
 
   const url = 'https://t.me/Viandth?text=' + encodeURIComponent(msg);
@@ -1271,85 +1533,72 @@ function openExchange() {
   }
 }
 
-// ── Rate display update ──
+// ── Rate display ──
 function updateDisplayedRates() {
-  document.getElementById('rateRUB').textContent = rates.RUB;
+  document.getElementById('rateRUB').textContent  = rates.RUB;
   document.getElementById('rateUSDT').textContent = rates.USDT;
   document.querySelectorAll('#t1').forEach(el => el.textContent = rates.RUB);
   document.querySelectorAll('#t2').forEach(el => el.textContent = rates.USDT);
-  const now = new Date();
   const el = document.getElementById('lastUpdate');
-  if (el) el.textContent = 'Обновлено: ' + now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  if (el) el.textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
   recalc();
 }
 
-// ── Google Sheets ──
-const SHEET_ID = '1YEPulZ58qBWoODfrrV1UHUptxTQcA9tAWK6HdSTN-NU';
-const FALLBACK_RATES = { RUB: 2.65, USDT: 31.46, RUB_BONUS: 2.69 };
+// ── Google Sheets (published CSV) ──
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQn3XqSd0ervhVftpFk--DuJ26OCQgTmkcTTP4ssykeuqEIN4aMyAVXSzkKSZ3fjEE4aEDZ-LPIVLMv/pub?gid=980451102&single=true&output=csv';
 let sheetsLoaded = false;
 
 async function fetchRatesFromSheets() {
   const el = document.getElementById('lastUpdate');
-  const gids = ['0','1','2','3','4','5'];
-  for (const gid of gids) {
-    try {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}&t=${Date.now()}`;
-      const resp = await fetch(url, { cache: 'no-store' });
-      if (!resp.ok) continue;
-      const text = await resp.text();
-      if (!text || text.trim().startsWith('<!')) continue;
-      const rows = text.trim().split('\n').map(r => r.split(',').map(v => v.replace(/"/g,'').trim()));
-      if (rows.length >= 8) {
-        const row = rows[7];
-        const r = parseFloat(row[1]);
-        const u = parseFloat(row[2]);
-        const b = parseFloat(row[3]);
-        if (!isNaN(r) && r > 0) rates.RUB = r;
-        if (!isNaN(u) && u > 0) rates.USDT = u;
-        if (!isNaN(b) && b > 0) rates.RUB_BONUS = b;
-        sheetsLoaded = true;
-        updateDisplayedRates();
-        const now = new Date();
-        if (el) el.innerHTML = '🟢 Из таблицы: ' + now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
-        return;
-      }
-    } catch(e) {}
+  try {
+    const resp = await fetch(SHEET_CSV_URL + '&t=' + Date.now(), { cache: 'no-store' });
+    if (!resp.ok) throw new Error('not ok');
+    const text = await resp.text();
+    if (!text || text.trim().startsWith('<!')) throw new Error('html response');
+
+    const rows = text.trim().split('\n').map(r => r.split(',').map(v => v.replace(/"/g,'').trim()));
+    // B2 = row[1][1], C2 = row[1][2], D2 = row[1][3]
+    if (rows.length >= 2) {
+      const row = rows[1];
+      const r = parseFloat(row[1]);
+      const u = parseFloat(row[2]);
+      const b = parseFloat(row[3]);
+      if (!isNaN(r) && r > 0) rates.RUB       = r;
+      if (!isNaN(u) && u > 0) rates.USDT      = u;
+      if (!isNaN(b) && b > 0) rates.RUB_BONUS = b;
+      sheetsLoaded = true;
+      updateDisplayedRates();
+      if (el) el.innerHTML = '🟢 Из таблицы: ' + new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+      return;
+    }
+  } catch(e) {
+    console.log('Sheets fetch failed:', e.message);
   }
-  if (!sheetsLoaded) {
-    rates.RUB = FALLBACK_RATES.RUB;
-    rates.USDT = FALLBACK_RATES.USDT;
-    rates.RUB_BONUS = FALLBACK_RATES.RUB_BONUS;
-    updateDisplayedRates();
-  }
-  if (el) el.innerHTML = '⚠️ Нужно опубликовать таблицу (резервный курс)';
+  if (!sheetsLoaded) updateDisplayedRates();
+  if (el) el.innerHTML = '⚠️ Резервный курс';
 }
 
-// ── Telegram Mini App SDK ──
+// ── Telegram SDK ──
 (function initTelegram() {
   if (typeof Telegram === 'undefined' || !Telegram.WebApp) return;
   const tg = Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-  tg.MainButton.hide();
+  tg.ready(); tg.expand(); tg.MainButton.hide();
   try { tg.setHeaderColor('#FF6B1A'); } catch(e) {}
   try { tg.setBackgroundColor('#EEF6FF'); } catch(e) {}
   document.getElementById('mainInput').addEventListener('input', function() {
     this.value ? tg.BackButton.show() : tg.BackButton.hide();
   });
-  tg.BackButton.onClick(function() {
-    clearInput();
-    tg.BackButton.hide();
-  });
+  tg.BackButton.onClick(() => { clearInput(); tg.BackButton.hide(); });
   document.body.style.paddingBottom = '20px';
 })();
 
-// Init
+// ── Init ──
+buildQuickBtns();
 updateDisplayedRates();
 fetchRatesFromSheets();
 setInterval(fetchRatesFromSheets, 10 * 60 * 1000);
-
-// Default: show 10K quick
-setQuick(10000);
+// Default: RUB selected, no amount
+setPayDir('RUB');
 </script>
 
 </body>
