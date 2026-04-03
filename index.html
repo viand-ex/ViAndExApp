@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#FF6B1A">
 <title>ViAndEx — Обмен валют в Таиланде</title>
 <!-- Telegram Mini App SDK -->
@@ -25,6 +25,13 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* Tap anywhere to dismiss keyboard */
+  body { cursor: pointer; }
+  input, button, a, select { cursor: auto; }
+  html, body {
+    height: 100%;
+    background: #EEF6FF;
+  }
 
   body {
     font-family: 'Nunito', -apple-system, sans-serif;
@@ -32,6 +39,7 @@
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   /* HERO */
@@ -46,7 +54,7 @@
     display: block;
     max-height: 420px;
     object-fit: cover;
-    object-position: 45% 20%;
+    object-position: center bottom;
     opacity: 0.92;
   }
   .hero-overlay {
@@ -1243,17 +1251,20 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin-top: -50px;
+    padding-top: 50px;
   }
   .hero-v2-img {
     position: absolute;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: 45% 20%;
+    object-position: center bottom;
     display: block;
   }
   .hero-v2-overlay {
-    position: absolute; inset: 0;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(
       to bottom,
       rgba(10,20,40,0.35) 0%,
@@ -1269,7 +1280,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 18px 18px 0;
+    padding: 60px 18px 0;
   }
   .hero-v2-logo { display: flex; flex-direction: column; gap: 2px; }
   .hero-v2-logo-text {
@@ -1332,7 +1343,13 @@
     gap: 2px;
     text-align: center;
   }
-  .hero-v2-rate-label {
+  /* Push USDT value down to align with RUB value
+     RUB has bonus badge below (~20px), so USDT label needs extra top margin */
+
+  .hero-v2-rate-col.usdt-col {
+    margin-top: -22px;
+  }
+    .hero-v2-rate-label {
     justify-content: center;
   }
   .hero-v2-rate-label {
@@ -1468,8 +1485,8 @@
     <button class="hero-v2-refresh" onclick="fetchRatesFromSheets()" title="Обновить курсы">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
     </button>
-    <!-- USDT col — centered -->
-    <div class="hero-v2-rate-col">
+    <!-- USDT col — aligned with RUB val -->
+    <div class="hero-v2-rate-col usdt-col">
       <div class="hero-v2-rate-label"><span class="hero-v2-dot usdt-dot" style="color:#53ae94">●</span>  USDT › THB</div>
       <div class="hero-v2-rate-val teal-val" id="heroRateUSDT">31.46</div>
     </div>
@@ -1517,13 +1534,15 @@
 
   <!-- STEP 2: Amount label + input -->
   <div class="sec-label" id="amountLabel">СКОЛЬКО РУБЛЕЙ?</div>
-  <div class="amount-card">
+  <div class="amount-card" onclick="void(0)">
     <div class="amount-row">
       <div class="amount-thb-icon rub-mode" id="amountIcon">₽</div>
-      <input class="amount-input" id="mainInput" type="number" inputmode="numeric"
-        placeholder="10000" oninput="onMainInput()">
+      <input class="amount-input" id="mainInput" type="number" inputmode="decimal"
+        enterkeyhint="done" placeholder="10000"
+        oninput="onMainInput()"
+        onkeydown="if(event.key==='Enter'||event.keyCode===13){this.blur();event.preventDefault();}">
       <div class="amount-arrow">→</div>
-      <div class="amount-result-pill" id="resultPill">—</div>
+      <div class="amount-result-pill" id="resultPill" onclick="document.getElementById('mainInput').blur()">—</div>
       <button class="amount-clear" onclick="clearInput()">✕</button>
     </div>
   </div>
@@ -1780,14 +1799,14 @@ function recalc() {
 
   if (payDir === 'RUB') {
     const estThb = raw / rates.RUB;
-    usedRate = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    usedRate = (estThb < rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
     thbResult = raw / usedRate;
     roundedThb = Math.floor(thbResult);
     pill.innerHTML = fmtInt(roundedThb) + ' ฿';
     if (bigNum) bigNum.textContent = fmtInt(roundedThb);
     if (rateRow) rateRow.innerHTML = `↗ 1 ₽ = ${usedRate} ฿`;
     if (rangeBadge) {
-      rangeBadge.textContent = (roundedThb <= rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
+      rangeBadge.textContent = (roundedThb < rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
       rangeBadge.style.display = 'inline-flex';
     }
 
@@ -1798,13 +1817,13 @@ function recalc() {
     if (bigNum) bigNum.textContent = fmtInt(roundedThb);
     if (rateRow) rateRow.innerHTML = `↗ 1 USDT = ${rates.USDT} ฿`;
     if (rangeBadge) {
-      rangeBadge.textContent = (roundedThb <= rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
+      rangeBadge.textContent = (roundedThb < rates.BONUS_LIMIT) ? '🏷 до 10 000 ฿' : '🏷 от 10 000 ฿';
       rangeBadge.style.display = 'inline-flex';
     }
 
   } else if (payDir === 'THB') {
     const thb = Math.floor(raw);
-    usedRate = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    usedRate = (thb < rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
     const rubNeed  = thb * usedRate;
     const usdtNeed = thb / rates.USDT;
     roundedThb = thb;
@@ -1840,9 +1859,9 @@ function openExchange() {
 
   if (payDir === 'RUB') {
     const estThb = raw / rates.RUB;
-    const r = (estThb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const r = (estThb < rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
     const thb = Math.floor(raw / r);
-    const tariff = (thb <= rates.BONUS_LIMIT) ? 'до 10 000 ฿' : 'от 10 000 ฿';
+    const tariff = (thb < rates.BONUS_LIMIT) ? 'до 10 000 ฿' : 'от 10 000 ฿';
     giveAmt = fmtInt(raw) + ' ₽';
     giveSub = 'Рубль · СБП';
     getAmt  = fmtInt(thb) + ' ฿';
@@ -1859,9 +1878,9 @@ function openExchange() {
 
   } else if (payDir === 'THB') {
     const thb = Math.floor(raw);
-    const r = (thb <= rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
+    const r = (thb < rates.BONUS_LIMIT) ? rates.RUB_BONUS : rates.RUB;
     const rub = Math.round(thb * r);
-    const tariff = (thb <= rates.BONUS_LIMIT) ? 'до 10 000 ฿' : 'от 10 000 ฿';
+    const tariff = (thb < rates.BONUS_LIMIT) ? 'до 10 000 ฿' : 'от 10 000 ฿';
     giveAmt = fmtInt(rub) + ' ₽';
     giveSub = 'Рубль · СБП';
     getAmt  = fmtInt(thb) + ' ฿';
@@ -2005,6 +2024,23 @@ async function fetchRatesFromSheets() {
   tg.BackButton.onClick(() => { clearInput(); tg.BackButton.hide(); });
   document.body.style.paddingBottom = '20px';
 })();
+
+// ── Tap anywhere to dismiss keyboard ──
+// ── Dismiss keyboard on any tap outside input ──
+function dismissKeyboard(e) {
+  const active = document.activeElement;
+  if (!active || (active.tagName !== 'INPUT' && active.tagName !== 'TEXTAREA')) return;
+  // If tapped element is not an input — blur
+  if (e.target !== active) {
+    active.blur();
+    // On iOS Safari we need an extra nudge
+    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+      setTimeout(() => { if (document.activeElement === active) active.blur(); }, 50);
+    }
+  }
+}
+document.addEventListener('touchend', dismissKeyboard, { passive: true });
+document.addEventListener('mousedown', dismissKeyboard);
 
 // ── Init ──
 buildQuickBtns();
