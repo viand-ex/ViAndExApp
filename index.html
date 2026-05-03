@@ -1992,41 +1992,57 @@ document.addEventListener('mousedown', dismissKeyboard);
 // При фокусе на поле ввода клавиатура занимает нижнюю половину экрана.
 // Прокручиваем страницу так, чтобы кнопка «Обменять» оказалась прямо над
 // клавиатурой — тогда видны и поле ввода, и блок результата, и CTA.
+//
+// Тонкость: iOS Safari (и Telegram WebView) сам делает auto-scroll к input
+// при фокусе. Если мы запускаем свой скролл ПОСЛЕ — получается заметный
+// дёрг (iOS прокрутил в одну точку, мы → в другую). Поэтому мы:
+//   1) на pointerdown сразу прокручиваем страницу к нужному месту
+//      (ДО того как iOS начнёт что-то делать) — iOS видит, что input уже
+//      на нужной позиции, и собственный auto-scroll не запускает.
+//   2) дублируем скролл на focus + visualViewport.resize как страховку
+//      (мгновенным, не smooth — чтобы не конфликтовать с iOS-анимацией).
 (function setupScrollOnFocus() {
   const input = document.getElementById('mainInput');
   if (!input) return;
 
-  function scrollCtaIntoView() {
+  function scrollCtaIntoView(smooth) {
     const cta = document.getElementById('ctaExchange');
     if (!cta) return;
     // block:'end' выравнивает низ кнопки по низу видимой области (т.е. по
     // верхней границе клавиатуры). На iOS Safari/Telegram WebView visual
     // viewport уже сужен из-за клавиатуры, поэтому скролл попадает в нужную точку.
     try {
-      cta.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      cta.scrollIntoView({ block: 'end', behavior: smooth ? 'smooth' : 'instant' });
     } catch (e) {
-      // Fallback для старых браузеров без options
       cta.scrollIntoView(false);
     }
   }
 
-  input.addEventListener('focus', () => {
-    // 320ms — даём iOS Safari отыграть свою анимацию клавиатуры
-    // и встроенный auto-scroll, после чего корректируем сами.
-    setTimeout(scrollCtaIntoView, 320);
-    // Повторяем ещё раз, на случай если visual viewport обновился позже
-    setTimeout(scrollCtaIntoView, 600);
+  // 1) Pre-scroll до того как iOS начнёт свой auto-scroll.
+  //    pointerdown срабатывает ДО focus и ДО внутреннего скролла Safari.
+  input.addEventListener('pointerdown', () => {
+    // Откладываем на следующий tick, чтобы input.focus() успел встать в очередь
+    requestAnimationFrame(() => scrollCtaIntoView(false));
   });
 
-  // Также реагируем на изменение visual viewport (клавиатура показалась
-  // или убралась) — чтобы корректно перепрокрутить если высота поменялась.
+  // 2) Подстраховка на focus — если pointerdown не сработал
+  //    (например, фокус через Tab или программный focus()).
+  input.addEventListener('focus', () => {
+    // Без задержки и без анимации — мгновенно встаём на нужную позицию.
+    scrollCtaIntoView(false);
+    // Один поздний прогон на случай если клавиатура поменяла высоту
+    // viewport уже после нашего скролла.
+    setTimeout(() => scrollCtaIntoView(false), 350);
+  });
+
+  // 3) Подписываемся на изменение visual viewport (показ/скрытие клавиатуры).
   if (window.visualViewport) {
     let lastHeight = window.visualViewport.height;
     window.visualViewport.addEventListener('resize', () => {
       const h = window.visualViewport.height;
       // Клавиатура только что показалась → высота уменьшилась
       if (h < lastHeight - 100 && document.activeElement === input) {
-        setTimeout(scrollCtaIntoView, 80);
+        scrollCtaIntoView(false);
       }
       lastHeight = h;
     });
