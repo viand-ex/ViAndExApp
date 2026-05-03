@@ -2005,34 +2005,31 @@ document.addEventListener('mousedown', dismissKeyboard);
   const input = document.getElementById('mainInput');
   if (!input) return;
 
-  function scrollCtaIntoView(smooth) {
+  function scrollCtaIntoView() {
     const cta = document.getElementById('ctaExchange');
     if (!cta) return;
     // block:'end' выравнивает низ кнопки по низу видимой области (т.е. по
     // верхней границе клавиатуры). На iOS Safari/Telegram WebView visual
     // viewport уже сужен из-за клавиатуры, поэтому скролл попадает в нужную точку.
     try {
-      cta.scrollIntoView({ block: 'end', behavior: smooth ? 'smooth' : 'instant' });
+      cta.scrollIntoView({ block: 'end', behavior: 'smooth' });
     } catch (e) {
       cta.scrollIntoView(false);
     }
   }
 
   // 1) Pre-scroll до того как iOS начнёт свой auto-scroll.
-  //    pointerdown срабатывает ДО focus и ДО внутреннего скролла Safari.
+  //    pointerdown срабатывает ДО focus и ДО внутреннего скролла Safari —
+  //    таким образом наш плавный скролл начинается первым, и iOS видит,
+  //    что input уже движется в видимую зону, и не запускает свой рывок.
   input.addEventListener('pointerdown', () => {
-    // Откладываем на следующий tick, чтобы input.focus() успел встать в очередь
-    requestAnimationFrame(() => scrollCtaIntoView(false));
+    requestAnimationFrame(scrollCtaIntoView);
   });
 
   // 2) Подстраховка на focus — если pointerdown не сработал
   //    (например, фокус через Tab или программный focus()).
   input.addEventListener('focus', () => {
-    // Без задержки и без анимации — мгновенно встаём на нужную позицию.
-    scrollCtaIntoView(false);
-    // Один поздний прогон на случай если клавиатура поменяла высоту
-    // viewport уже после нашего скролла.
-    setTimeout(() => scrollCtaIntoView(false), 350);
+    scrollCtaIntoView();
   });
 
   // 3) Подписываемся на изменение visual viewport (показ/скрытие клавиатуры).
@@ -2042,7 +2039,7 @@ document.addEventListener('mousedown', dismissKeyboard);
       const h = window.visualViewport.height;
       // Клавиатура только что показалась → высота уменьшилась
       if (h < lastHeight - 100 && document.activeElement === input) {
-        scrollCtaIntoView(false);
+        scrollCtaIntoView();
       }
       lastHeight = h;
     });
