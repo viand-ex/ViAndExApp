@@ -1876,6 +1876,22 @@ async function fetchRatesFromSheets() {
   try { if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes(); } catch(e) {}
   // Stay expanded even when keyboard appears (Bot API 8.0+).
   try { if (typeof tg.disableClosingConfirmation === 'function') tg.disableClosingConfirmation(); } catch(e) {}
+  // Запрашиваем fullscreen-режим (Bot API 8.0+ / Telegram 11.0+, окт 2024).
+  // Это убирает оранжевую полосу «Закрыть / Калькулятор обмена ViAndEx ···»
+  // и приложение открывается на весь экран — независимо от точки входа
+  // (menu button «Калькулятор», deep link, history). На старых клиентах
+  // вызов просто игнорируется и остаётся стандартное поведение tg.expand().
+  try {
+    if (typeof tg.requestFullscreen === 'function') {
+      tg.requestFullscreen();
+      // Обработка отказа — например, если приложение открыто как inline-bot
+      // или клиент не поддерживает fullscreen. В таких случаях fallback'аемся
+      // на обычный expand, который мы уже вызвали.
+      tg.onEvent && tg.onEvent('fullscreenFailed', () => {
+        try { tg.expand(); } catch(e) {}
+      });
+    }
+  } catch(e) {}
   document.getElementById('mainInput').addEventListener('input', function() {
     this.value ? tg.BackButton.show() : tg.BackButton.hide();
   });
