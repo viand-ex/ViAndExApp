@@ -1988,6 +1988,51 @@ function dismissKeyboard(e) {
 document.addEventListener('touchend', dismissKeyboard, { passive: true });
 document.addEventListener('mousedown', dismissKeyboard);
 
+// ── Auto-scroll on input focus ──
+// При фокусе на поле ввода клавиатура занимает нижнюю половину экрана.
+// Прокручиваем страницу так, чтобы кнопка «Обменять» оказалась прямо над
+// клавиатурой — тогда видны и поле ввода, и блок результата, и CTA.
+(function setupScrollOnFocus() {
+  const input = document.getElementById('mainInput');
+  if (!input) return;
+
+  function scrollCtaIntoView() {
+    const cta = document.getElementById('ctaExchange');
+    if (!cta) return;
+    // block:'end' выравнивает низ кнопки по низу видимой области (т.е. по
+    // верхней границе клавиатуры). На iOS Safari/Telegram WebView visual
+    // viewport уже сужен из-за клавиатуры, поэтому скролл попадает в нужную точку.
+    try {
+      cta.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    } catch (e) {
+      // Fallback для старых браузеров без options
+      cta.scrollIntoView(false);
+    }
+  }
+
+  input.addEventListener('focus', () => {
+    // 320ms — даём iOS Safari отыграть свою анимацию клавиатуры
+    // и встроенный auto-scroll, после чего корректируем сами.
+    setTimeout(scrollCtaIntoView, 320);
+    // Повторяем ещё раз, на случай если visual viewport обновился позже
+    setTimeout(scrollCtaIntoView, 600);
+  });
+
+  // Также реагируем на изменение visual viewport (клавиатура показалась
+  // или убралась) — чтобы корректно перепрокрутить если высота поменялась.
+  if (window.visualViewport) {
+    let lastHeight = window.visualViewport.height;
+    window.visualViewport.addEventListener('resize', () => {
+      const h = window.visualViewport.height;
+      // Клавиатура только что показалась → высота уменьшилась
+      if (h < lastHeight - 100 && document.activeElement === input) {
+        setTimeout(scrollCtaIntoView, 80);
+      }
+      lastHeight = h;
+    });
+  }
+})();
+
 // ── Init ──
 buildQuickBtns();
 updateDisplayedRates();
