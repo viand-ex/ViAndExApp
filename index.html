@@ -131,7 +131,10 @@
   .main {
     max-width: 480px;
     margin: 0 auto;
-    padding: 20px 16px 40px;
+    /* padding-top = 0: первый .sec-label сам даёт 18px margin-top,
+       поэтому отступ от hero до "Вы отдаёте" совпадает с отступами
+       между остальными секциями ниже (~18px). */
+    padding: 0 16px 40px;
   }
 
   /* RATES CARD */
